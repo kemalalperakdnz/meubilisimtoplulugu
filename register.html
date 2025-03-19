@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol - Bilişim Topluluğu</title>
+    <link rel="icon" type="image/x-icon" href="images/bilişim.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+</script>
+<script type="text/javascript">
+   (function(){
+      emailjs.init({
+        publicKey: "XXXXXXXXXXXXXXXX",
+      });
+   })();
+</script>
+    <style>
+        :root {
+            --neon-green: #00ff00;
+            --dark-bg: #000000;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', monospace;
+            background: var(--dark-bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        canvas#matrixCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .register-container {
+            position: relative;
+            z-index: 1;
+            min-height: calc(100vh - 40px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .register-box {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 25px;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+            animation: glow 2s infinite alternate;
+        }
+
+        .register-title {
+            color: #00ff00;
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .form-control {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            background: rgba(0, 0, 0, 0.7);
+            border-color: #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            color: #00ff00;
+        }
+
+        .cyber-btn {
+            background: transparent;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .cyber-btn:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 20px #00ff00;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .login-link a {
+            color: #00ff00;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .login-link a:hover {
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+            }
+            to {
+                box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            }
+        }
+
+        ::placeholder {
+            color: rgba(0, 255, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+
+    <div class="register-container">
+        <div class="register-box">
+            <form>
+            <h2 class="register-title">Topluluğumuza Katıl</h2>
+            <div class="position-relative mb-4" style="text-align: center; margin-top: -50px; " >
+                <img src="images/bilişim.png" alt="bilişim" class="member-image rounded-circle" width="250px" height="250px">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Ad Soyad" id="name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" class="form-control" placeholder="E-posta" id="email" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Üniversite" id="university" required>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Bölüm" id="department" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input type="number" class="form-control" placeholder="Sınıf" id="class" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Şifre" id="password" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Şifre Tekrar" id="confirmPassword" required>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="cyber-btn" onclick="sendMail()">Kayıt Ol</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        
+        const chars = '01';  
+        const charSize = 14;
+        const columns = canvas.width / charSize;
+        const drops = [];
+
+        
+        for(let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0'; 
+            ctx.font = 'bold ' + charSize + 'px monospace';
+
+            for(let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * charSize, drops[i] * charSize);
+
+                if(drops[i] * charSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+       
+        setInterval(drawMatrix, 50);
+    </script>
+
+    <script>
+    function sendMail(event) {
+        event.preventDefault(); 
+
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const university = document.getElementById('university').value;
+        const department = document.getElementById('department').value;
+        const classYear = document.getElementById('class').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (password !== confirmPassword) {
+            alert("Şifreler eşleşmiyor!");
+            return;
+        }
+
+        const templateParams = {
+            name: name,
+            email: email,
+            university: university,
+            department: department,
+            class: classYear,
+            password: password,
+            to_email: 'meubilisimtoplulugu@gmail.com' // Buraya kendi e-posta adresinizi yazın
+        };
+
+        emailjs.send('service_w584miq', 'template_4rnn4sy', templateParams)
+            .then(function(response) {
+                console.log('SUCCESS!', response.status, response.text);
+                alert("Kayıt başarılı! Profil sayfanıza yönlendiriliyorsunuz...");
+                // Profil sayfasına yönlendirme
+                const params = new URLSearchParams({
+                    name: name,
+                    email: email,
+                    university: university,
+                    department: department,
+                    class: classYear
+                });
+                window.location.href = `profil.html?${params.toString()}`;
+            }, function(error) {
+                console.log('FAILED...', error);
+                alert("Kayıt başarısız! Lütfen tekrar deneyin.");
+            });
+    }
+
+    document.querySelector('form').addEventListener('submit', sendMail);
+</script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

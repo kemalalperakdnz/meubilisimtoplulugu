@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil kartı</title>
+    <link rel="icon" type="image/x-icon" href="images/bilişim.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- html2canvas'ın en son sürümünü kullanalım -->
+    <style>
+        :root {
+            --neon-green: #0f0;
+            --dark-bg: #000;
+            --card-bg: rgba(0, 0, 0, 0.9);
+            --hover-color: #00ff00;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            font-family: 'Courier New', monospace;
+            background: var(--dark-bg);
+            color: var(--neon-green);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        
+        #matrixCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 360px;
+            padding: 25px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border: 2px solid var(--neon-green);
+            border-radius: 20px;
+            box-shadow: 0 0 30px var(--neon-green),
+                        inset 0 0 20px var(--neon-green);
+            position: relative;
+            overflow: visible;
+            animation: glowPulse 2s infinite;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .glitch-wrapper {
+            position: relative;
+        }
+
+        .member-card {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 30px;
+        }
+
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 70%;
+            border: 3px solid var(--neon-green);
+            box-shadow: 0 0 25px var(--neon-green);
+            margin: 0 auto 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--dark-bg);
+            padding: 5px;
+        }
+
+        .profile-image img {
+            width: calc(258px);
+            height: calc(1000px);
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            display: block;
+            border-radius: 50%;
+            filter: brightness(1.2) contrast(1.1);
+        }
+
+        .profile-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px var(--neon-green);
+        }
+
+        .profile-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 0, 0.1), transparent);
+            animation: shine 2s infinite;
+            pointer-events: none;
+            border-radius: 50%;
+        }
+
+        .member-name {
+            font-size: 2.2em;
+            margin: 10px 0;
+            text-shadow: 0 0 10px var(--neon-green),
+                         0 0 20px var(--neon-green),
+                         0 0 30px var(--neon-green);
+            animation: textGlitch 3s infinite;
+            letter-spacing: 2px;
+        }
+
+        .member-title {
+            font-size: 2em;
+            color: #88ff88;
+            margin: 8px 0;
+            text-shadow: 0 0 10px #fff;
+            letter-spacing: 1px;
+        }
+
+        .member-description {
+            color: #88ff88;
+            font-size: 1.5em;
+            margin: 10px 0;
+            text-shadow: 0 0 8px #88ff88;
+            letter-spacing: 1px;
+        }
+
+        .social-links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--neon-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            font-size: 1.5em;
+            text-decoration: none;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-link:hover {
+            background: var(--neon-green);
+            color: var(--dark-bg);
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0, 255, 0, 0.4);
+        }
+
+        .social-link::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 0, 0.2), transparent);
+            top: -100%;
+            left: -100%;
+            transition: all 0.6s;
+        }
+
+        .social-link:hover::before {
+            top: 100%;
+            left: 100%;
+        }
+
+        .download-btn {
+            margin: 20px auto;
+            padding: 10px 25px;
+            background: transparent;
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.4s;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            display: block;
+        }
+        
+        .download-btn:hover {
+            background: var(--neon-green);
+            color: var(--dark-bg);
+            box-shadow: 0 0 25px var(--neon-green);
+            transform: translateY(-3px);
+        }
+
+        .download-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(0, 255, 0, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .download-btn:hover::before {
+            left: 100%;
+        }
+
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 20px var(--neon-green); }
+            50% { box-shadow: 0 0 40px var(--neon-green); }
+            100% { box-shadow: 0 0 20px var(--neon-green); }
+        }
+
+        @keyframes textGlitch {
+            0% { text-shadow: 0 0 10px var(--neon-green); }
+            25% { text-shadow: -2px 0 var(--neon-green), 2px 2px #0ff; }
+            50% { text-shadow: 2px 0 red, -2px -2px var(--neon-green); }
+            75% { text-shadow: -2px -2px #0ff, 2px 0 var(--neon-green); }
+            100% { text-shadow: 0 0 10px var(--neon-green); }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) rotate(45deg); }
+            100% { transform: translateX(-100%) rotate(45deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .member-name {
+                font-size: 2em;
+            }
+            .member-title {
+                font-size: 1.2em;
+            }
+            .member-description {
+                font-size: 1em;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas" class="matrix-bg"></canvas>
+    
+    
+    <div class="container">
+        <div class="member-card">
+            <div class="glitch-wrapper">
+                <div class="profile-image">
+                    <img src="images/bilişim.png" alt="Profile Image">
+                </div>
+            </div>
+            <h3 class="member-name">{{name}}</h3>
+            <p class="member-title">{{university}}</p>
+            <p class="member-description">{{department}}</p>
+            <p class="member-description">{{class}}</p>
+            
+            <div class="social-links">
+                <a href="#" class="social-link">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+        </div>
+        <button class="download-btn" onclick="downloadProfileAsPDF()">Profil Kartını İndir</button>
+    </div>
+
+    <script>
+       
+        function fillProfileFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            document.querySelector('.member-name').textContent = urlParams.get('name') || '{{name}}';
+            document.querySelector('.member-title').textContent = urlParams.get('university') || '{{university}}';
+            
+            const descriptions = document.querySelectorAll('.member-description');
+            descriptions[0].textContent = urlParams.get('department') || '{{department}}';
+            if (descriptions.length > 1) {
+                descriptions[1].textContent = urlParams.get('class') ? `${urlParams.get('class')}. Sınıf` : '{{class}}';
+            }
+
+            const emailLink = document.querySelector('.social-link .fa-envelope').parentElement;
+            const email = urlParams.get('email');
+            if (email) {
+                emailLink.href = `mailto:${email}`;
+            }
+        }
+
+        
+        window.addEventListener('load', fillProfileFromURL);
+
+        
+        function downloadProfileAsPDF() {
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            
+            canvas.width = 400;
+            canvas.height = 600;
+            
+            
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            
+            ctx.beginPath();
+            ctx.strokeStyle = '#00ff00';
+            ctx.lineWidth = 3;
+            ctx.arc(canvas.width/2, 150, 70, 0, Math.PI * 2);
+            ctx.stroke();
+            
+          
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#00ff00';
+            
+            // İsim yaz
+            const urlParams = new URLSearchParams(window.location.search);
+            const name = urlParams.get('name') || 'İSİM';
+            ctx.font = 'bold 32px monospace';
+            const nameLines = name.split(' ');
+            nameLines.forEach((line, index) => {
+                ctx.fillText(line, canvas.width/2, 300 + (index * 40));
+            });
+            
+            // Üniversite bilgisi
+            ctx.font = '20px monospace';
+            const university = urlParams.get('university') || 'ÜNİVERSİTE';
+            const universityLines = university.split(' ');
+            universityLines.forEach((line, index) => {
+                ctx.fillText(line, canvas.width/2, 405 + (index * 30));
+            });
+            
+            // Bölüm 
+            ctx.font = '15px monospace';
+            ctx.fillStyle = '#00ff00';
+            const department = urlParams.get('department') || 'BÖLÜM';
+            ctx.fillText(department, canvas.width/2, 460);
+            
+            // Sınıf bilgisi
+            const classText = urlParams.get('class') ? `${urlParams.get('class')}. Sınıf` : 'Sınıf';
+            ctx.fillText(classText, canvas.width/2, 480);
+            
+         
+            const iconY = 520;
+            const iconRadius = 25;
+            const iconSpacing = 80;
+        
+            ctx.beginPath();
+            ctx.arc(canvas.width/2 - iconSpacing, iconY, iconRadius, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(canvas.width/2, iconY, iconRadius, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(canvas.width/2 + iconSpacing, iconY, iconRadius, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            const link = document.createElement('a');
+            link.download = `${name.toLowerCase().replace(/\s+/g, '_')}_profil.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const chars = '01';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 33);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

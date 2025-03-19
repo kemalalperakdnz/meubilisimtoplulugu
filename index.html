@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bilişim Topluluğu</title>
+    <link rel="icon" type="image/x-icon" href="images/bilişim.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        
+        #matrixCanvas {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100vw; 
+            height: 100vh; 
+            z-index: -1; 
+            opacity: 0.15; 
+        }
+
+        
+        body {
+            background-color: #0a0a0a; 
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            cursor: url('images/neon-cursor.png'), auto; 
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        
+        .nav-link, 
+        .btn,
+        button,
+        a,
+        .carousel-control-prev,
+        .carousel-control-next {
+            cursor: pointer; 
+        }
+
+        .form-control,
+        input,
+        textarea {
+            cursor: text; 
+        }
+
+       
+        .event:hover,
+        .project-card:hover,
+        .about-card:hover {
+            cursor: cell; 
+        }
+
+        
+        .about-section,
+        .events-section,
+        .projects-section,
+        .contact-section,
+        .stats-counter {
+            background: rgba(0, 0, 0, 0.5) !important; 
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.8);
+            border-bottom: 2px solid #00ff00;
+            transition: background 0.3s;
+            min-height: 80px; 
+        }
+
+        .navbar-nav {
+            align-items: center; 
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center; 
+            height: 100%;
+        }
+
+        .nav-link {
+            color: #fff; 
+            position: relative;
+            overflow: hidden;
+            padding: 10px 15px;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center; 
+            height: 100%;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center; 
+            height: 100%;
+        }
+
+        .nav-link:hover {
+            color: #00ff00; 
+            background: rgba(0, 255, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: #00ff00;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover::after {
+            left: 0;
+        }
+
+        .hero-section {
+            position: relative;
+            min-height: 115vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .matrix-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+            animation-delay: 0.5s;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            margin-bottom: 30px;
+            animation: glowText 1.5s ease-in-out infinite alternate;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 40px;
+            animation: slideIn 1s forwards;
+            animation-delay: 1s;
+        }
+
+        .hero-buttons {
+            margin-top: 25px; 
+        }
+
+        .cyber-btn {
+            background: rgba(0, 255, 0, 0.2); 
+            color: #00ff00; 
+            border: 2px solid #00ff00; 
+            padding: 15px 30px; 
+            font-size: 1.2rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            position: relative; 
+            overflow: hidden; 
+            transition: 0.3s; 
+            margin: 10px; 
+            opacity: 0.9; 
+        }
+
+        .cyber-btn:hover {
+            background: #00ff00; 
+            color: #000;
+            box-shadow: 0 0 20px #00ff00; 
+        }
+
+        .about-section {
+            background-color: #0a0a0a; 
+            padding: 50px 0; 
+            text-align: center;
+            transition: background-color 0.5s ease; 
+        }
+
+        .about-title {
+            font-size: 2.5rem;
+            color: #00ff00;
+            margin-bottom: 20px;
+        }
+
+        .about-text {
+            font-size: 1.2rem;
+            color: #fff;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .mission-vision {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .mission, .vision {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 0 10px;
+            width: 100%;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .mission-title, .vision-title {
+            font-size: 1.5rem;
+            color: #00ff00;
+            margin-bottom: 10px;
+        }
+
+        .members-section {
+            margin-top: 50px;
+        }
+
+        .member {
+            margin: 20px 0;
+            font-size: 1.1rem;
+        }
+
+        .events-section, .projects-section, .contact-section {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 50px 0;
+            text-align: center;
+        }
+
+        .events-title, .projects-title, .contact-title {
+            font-size: 2.5rem;
+            color: #00ff00;
+            margin-bottom: 20px;
+        }
+
+        .event {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px; 
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .event:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.5);
+        }
+
+        .event h4 {
+            color: #00ff00;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif; 
+        }
+
+        .event p {
+            color: #fff;
+            margin: 5px 0;
+        }
+
+        .contact-info {
+            font-size: 1.2rem;
+            color: #fff;
+            margin-top: 20px;
+        }
+
+        @keyframes glowText {
+            from {
+                text-shadow: 0 0 10px #00ff00;
+            }
+            to {
+                text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif; 
+            color: #00ff00;
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .feature-card {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: #00ff00;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            background: #000;
+            padding: 50px 0;
+            border-top: 2px solid #00ff00;
+        }
+
+    
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .binary-rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.2;
+        }
+
+        .loader-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo-container {
+            width: 500px;
+            height: 500px;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .logo-glitch {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            animation: glitch 2s infinite;
+        }
+
+        .loader-text {
+            color: #00ff00;
+            font-size: 24px;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .loader-text::after {
+            content: '_';
+            animation: blink 1s infinite;
+        }
+
+        .progress-bar {
+            width: 300px;
+            height: 2px;
+            background: rgba(0, 255, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: #00ff00;
+            animation: fill 2s ease-in-out infinite;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        @keyframes glitch {
+            0% {
+                transform: translate(0);
+                filter: hue-rotate(0deg);
+            }
+            10% {
+                transform: translate(-5px, 5px);
+                filter: hue-rotate(90deg);
+            }
+            20% {
+                transform: translate(5px, -5px);
+                filter: hue-rotate(180deg);
+            }
+            30% {
+                transform: translate(0);
+                filter: hue-rotate(0deg);
+            }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        @keyframes fill {
+            0% { width: 0; }
+            50% { width: 100%; }
+            100% { width: 0; }
+        }
+
+        .member-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff00;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+        }
+
+        .member-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.4);
+        }
+
+        .president-card {
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.9), rgba(0, 40, 0, 0.9));
+            border: 2px solid #00ff00;
+            padding: 35px;
+        }
+
+        .member-image {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border: 3px solid #00ff00;
+            padding: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .member-card:hover .member-image {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        .position-badge {
+            position: absolute;
+            top: 0;
+            right: 20%;
+            background: #00ff00;
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .member-name {
+            color: #00ff00;
+            font-size: 1.5rem;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .member-title {
+            color: #fff;
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .member-description {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .member-hover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 255, 0, 0.1);
+            border-radius: 50%;
+            opacity: 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .member-card:hover .member-hover {
+            opacity: 1;
+        }
+
+        .member-hover-content {
+            color: #fff;
+            padding: 20px;
+        }
+
+        .social-icon {
+            color: #00ff00;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            color: #fff;
+            transform: scale(1.2);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+    
+        .about-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .about-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.4);
+        }
+
+        .about-subtitle {
+            color: #00ff00;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .about-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .about-list li {
+            color: #fff;
+            margin: 10px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .about-list li:before {
+            content: '>';
+            color: #00ff00;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .value-item {
+            text-align: center;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .value-icon {
+            color: #00ff00;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        
+        .mission, .vision {
+            display: flex;
+            flex-direction: column; 
+            justify-content: space-between; 
+            height: 100%; 
+        }
+
+       
+        .about-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; 
+            height: 100%; 
+        }
+
+       
+        .event-info {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px;
+            background: rgba(0, 255, 0, 0.1);
+            border-radius: 5px;
+            border-left: 3px solid #00ff00;
+        }
+
+        .event-info i {
+            color: #00ff00;
+            margin-right: 10px;
+            font-size: 1.2rem;
+            width: 25px;
+            text-align: center;
+        }
+
+        .event-info span {
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        .event-description {
+            margin-top: 15px;
+            padding: 10px;
+            border-top: 1px solid rgba(0, 255, 0, 0.2);
+            color: #ddd;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            background: rgba(0, 0, 0, 0.6); 
+            border-radius: 5px; rı
+            position: relative; 
+            transition: background 0.3s; 
+        }
+
+        .event-description:hover {
+            background: rgba(0, 255, 0, 0.1); 
+        }
+
+        .event-description i {
+            color: #00ff00; 
+            margin-right: 5px; 
+        }
+
+        
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-control-prev {
+            left: -60px;
+        }
+
+        .carousel-control-next {
+            right: -60px;
+        }
+
+        .carousel-control-prev:hover,
+        .carousel-control-next:hover {
+            background: rgba(0, 255, 0, 0.2);
+            opacity: 1;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            width: 25px;
+            height: 25px;
+            background-size: 100%;
+            filter: invert(1) brightness(200%) sepia(100%) saturate(1000%) hue-rotate(90deg);
+        }
+
+        
+        #eventsCarousel {
+            position: relative;
+            padding: 0 70px; 
+        }
+
+        
+        @media (max-width: 768px) {
+            .carousel-control-prev,
+            .carousel-control-next {
+                width: 40px;
+                height: 40px;
+            }
+
+            .carousel-control-prev {
+                left: -45px;
+            }
+
+            .carousel-control-next {
+                right: -45px;
+            }
+        }
+
+        .project-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.5);
+        }
+
+        .project-title {
+            color: #00ff00;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .project-description {
+            color: #fff;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .project-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 255, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .project-info span {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        
+        .contact-section {
+            padding: 80px 0;
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .contact-info-card,
+        .contact-form-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 30px;
+            height: 100%;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .contact-info-card:hover,
+        .contact-form-card:hover {
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.4);
+        }
+
+        .contact-subtitle {
+            color: #00ff00;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .contact-item i {
+            color: #00ff00;
+            font-size: 1.2rem;
+            margin-right: 15px;
+            width: 25px;
+        }
+
+        .contact-item p {
+            color: #fff;
+            margin: 0;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-link {
+            color: #00ff00;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        .contact-form .form-control {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff00;
+            color: #fff;
+            margin-bottom: 20px;
+            padding: 12px;
+        }
+
+        .contact-form .form-control:focus {
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+            border-color: #00ff00;
+        }
+
+        .contact-form .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .contact-form button {
+            background: transparent;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-form button:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+        }
+
+        
+        @media (max-width: 991px) {
+            .navbar-nav {
+                padding: 10px 0;
+            }
+            
+            .nav-item {
+                margin: 5px 0;
+            }
+        }
+
+      
+        .container {
+            max-width: 1200px; 
+            margin: 0 auto;
+            padding: 0 15px; 
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap; 
+            margin: 0 -15px; 
+        }
+
+        .col-md-6, .col-md-4, .col-lg-4, .col-lg-6 {
+            padding: 0 15px; 
+        }
+
+        @media (max-width: 768px) {
+            .navbar-nav {
+                flex-direction: column; 
+                align-items: center; 
+            }
+
+            .hero-title {
+                font-size: 2.5rem; 
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem; 
+            }
+
+            .about-title, .events-title, .projects-title, .contact-title {
+                font-size: 2rem; 
+            }
+
+            .member-card {
+                margin-bottom: 30px; 
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-title {
+                font-size: 2rem; 
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .about-title, .events-title, .projects-title, .contact-title {
+                font-size: 1.5rem; 
+            }
+        }
+
+        
+        .navbar-toggler {
+            border: 2px solid #00ff00; 
+            background-color: transparent; 
+            padding: 8px; 
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 255, 0, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important; /* Yeşil hamburger menü ikonu */
+        }
+
+        .navbar-toggler:focus {
+            outline: none; 
+            box-shadow: 0 0 0 3px rgba(0, 255, 0, 0.3); 
+        }
+
+        .navbar-toggler:hover {
+            background-color: rgba(0, 255, 0, 0.1); 
+            border-color: #00ff00; 
+        }
+
+       
+        .navbar-toggler[aria-expanded="true"] {
+            background-color: rgba(0, 255, 0, 0.2); 
+        }
+
+        
+        .navbar-nav .nav-link {
+            color: #fff; 
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #00ff00; 
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrixCanvas" class="matrix-bg"></canvas>
+
+
+    <div class="preloader" id="preloader">
+        <canvas id="binaryRain" class="binary-rain"></canvas>
+        <div class="loader-content">
+            <div class="logo-container">
+                <img src="images/bilişim.png" 
+                     alt="Mersin Üniversitesi Logo" 
+                     class="logo-glitch">
+            </div>
+            <div class="loader-text">Bilişim Topluluğu</div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+   
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-laptop-code"></i> Bilişim Topluluğu
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#anasayfa">Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#hakkimizda">Hakkımızda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#etkinlikler">Etkinlikler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#projeler">Projeler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#iletisim">İletişim</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link cyber-btn" href="register.html">Bize Katıl</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="anasayfa">
+        <div class="container">
+            <div class="hero-content text-center">
+                <img src="images/bilişim.png" alt="Bilişim Topluluğu Logo" class="hero-logo">
+                <h1 class="hero-title">Bilişim Topluluğu</h1>
+                <p class="hero-subtitle">Teknoloji ve İnovasyonun Öncüsü</p>
+                <div class="hero-buttons">
+                    <a href="#projeler" class="cyber-btn">Projelerimiz</a>
+                    <a href="register.html" class="cyber-btn">Üye Ol</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hakkımızda Bölümü -->
+    <section class="about-section py-5" id="hakkimizda">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <h2 class="section-title display-4 text-success mb-4">Hakkımızda</h2>
+                    <p class="lead text-light mb-5">Bilişim dünyasında fark yaratmak için buradayız</p>
+                </div>
+            </div>
+
+            <!-- Biz Kimiz -->
+            <div class="row mb-5">
+                <div class="col-md-12">
+                    <div class="about-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <img src="images/Mersin_University_logo.svg.png" 
+                                     alt="Mersin Üniversitesi Logo" 
+                                     class="university-logo img-fluid"
+                                     style="max-width: 200px; margin-bottom: 20px;">
+                            </div>
+                            <div class="col-md-9">
+                                <h3 class="about-subtitle"><i class="fas fa-users me-2"></i> Biz Kimiz?</h3>
+                                <p class="about-text">
+                                    Mersin Üniversitesi Erdemli Uygulamalı Teknoloji ve İşletmecilik Yüksekokulu Bilişim Topluluğu, 2025 yılında kurulmuş, teknoloji ve bilişim alanında 
+                                    kendini geliştirmek isteyen öğrencilerin bir araya geldiği akademik bir topluluktur. 
+                                    Amacımız, üyelerimizin dijital çağın gereksinimlerine uygun beceriler kazanmasını sağlamak 
+                                    ve bilişim sektörüne nitelikli bireyler kazandırmaktır.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vizyon & Misyon -->
+            <div class="row mb-5">
+                <div class="mission-vision">
+                    <div class="col-md-6">
+                        <div class="about-card mission">
+                            <h3 class="about-subtitle"><i class="fas fa-eye me-2"></i> Vizyonumuz</h3>
+                            <p class="about-text">
+                                Türkiye'nin önde gelen öğrenci topluluklarından biri olarak, bilişim sektöründe 
+                                yenilikçi fikirlerin öncüsü olmak ve geleceğin teknoloji liderlerini yetiştirmek.
+                            </p>
+                            <ul class="about-list">
+                                <li>Teknolojik yenilikleri takip etmek</li>
+                                <li>Sürdürülebilir projeler geliştirmek</li>
+                                <li>Global düşünüp yerel hareket etmek</li>
+                                <li>Sektörle iş birliği içinde olmak</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="about-card vision">
+                            <h3 class="about-subtitle"><i class="fas fa-bullseye me-2"></i> Misyonumuz</h3>
+                            <p class="about-text">
+                                Üyelerimize güncel teknolojiler konusunda eğitimler sağlamak, pratik deneyimler 
+                                kazandırmak ve sektörle buluşmalarını sağlayarak kariyer gelişimlerine katkıda bulunmak.
+                            </p>
+                            <ul class="about-list">
+                                <li>Düzenli eğitim ve workshop'lar düzenlemek</li>
+                                <li>Sektör profesyonelleriyle buluşmalar organize etmek</li>
+                                <li>Takım çalışması becerilerini geliştirmek</li>
+                                <li>Proje tabanlı öğrenmeyi desteklemek</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Değerlerimiz -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="about-card">
+                        <h3 class="about-subtitle"><i class="fas fa-star me-2"></i> Değerlerimiz</h3>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="value-item">
+                                    <i class="fas fa-lightbulb value-icon"></i>
+                                    <h4>Yenilikçilik</h4>
+                                    <p>Teknolojik gelişmeleri takip eder ve uygularız</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="value-item">
+                                    <i class="fas fa-hands-helping value-icon"></i>
+                                    <h4>İş Birliği</h4>
+                                    <p>Takım çalışmasına önem veririz</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="value-item">
+                                    <i class="fas fa-brain value-icon"></i>
+                                    <h4>Sürekli Öğrenme</h4>
+                                    <p>Kendimizi sürekli geliştiririz</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="value-item">
+                                    <i class="fas fa-shield-alt value-icon"></i>
+                                    <h4>Güvenilirlik</h4>
+                                    <p>Etik değerlere bağlı kalırız</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Üyelerimiz Başlığı -->
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <h2 class="section-title display-4 text-success mb-4">Üyelerimiz</h2>
+                    <p class="lead text-light mb-5">Bilişim topluluğumuzun değerli üyeleri</p>
+                </div>
+            </div>
+
+            <!-- Başkan Kartı -->
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-6">
+                    <div class="member-card president-card text-center">
+                        <div class="position-relative mb-4">
+                            <img src="images/kemalalper.jpg" alt="Kemal Alper" class="member-image rounded-circle">
+                            <span class="position-badge">Başkan</span>
+                        </div>
+                        <h3 class="member-name">Kemal Alper AKDENİZ</h3>
+                        <p class="member-title mb-3">Topluluk Başkanı</p>
+                        <p class="member-description">
+                            Bilişim Sistemleri ve Teknolojileri 3. sınıf öğrencisi
+                        </p>
+                        <div class="social-links d-flex justify-content-center">
+                            <a href="#" class="btn btn-outline-success btn-sm mx-2">
+                                <i class="fab fa-linkedin fa-lg"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-success btn-sm mx-2">
+                                <i class="fab fa-github fa-lg"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-success btn-sm mx-2">
+                                <i class="fab fa-instagram fa-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Diğer Üyeler -->
+            <div class="row">
+                <!-- Üye Kartları -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="member-card h-100">
+                        <div class="card-body text-center">
+                            <div class="position-relative mb-4">
+                                <img src="images/Ahmet" alt="Ahmet Çelik" class="member-image rounded-circle">
+                            </div>
+                            <h4 class="member-name">Ahmet Çelik</h4>
+                            <p class="member-title mb-3">Başkan Yardımcısı</p>
+                            <p class="member-description">
+                                Bilişim Sistemleri ve Teknolojileri 3. sınıf öğrencisi
+                            </p>
+                            <div class="social-links d-flex justify-content-center">
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-github"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-linkedin"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="member-card h-100">
+                        <div class="card-body text-center">
+                            <div class="position-relative mb-4">
+                                <img src="images/Mehmet.jpg" alt="Mehmet Yılmaz" class="member-image rounded-circle">
+                            </div>
+                            <h4 class="member-name">Mehmet Yılmaz</h4>
+                            <p class="member-title mb-3">Sekreter</p>
+                            <p class="member-description">
+                                Bilişim Sistemleri ve Teknolojileri 3. sınıf öğrencisi
+                            </p>
+                            <div class="social-links d-flex justify-content-center">
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-github"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-linkedin"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="member-card h-100">
+                        <div class="card-body text-center">
+                            <div class="position-relative mb-4">
+                                <img src="images/mehmet2.jpg" alt="Mehmet Can" class="member-image rounded-circle">
+                            </div>
+                            <h4 class="member-name">Mehmet Can</h4>
+                            <p class="member-title mb-3">Sayman</p>
+                            <p class="member-description">
+                                Bilişim Sistemleri ve Teknolojileri 3. sınıf öğrencisi
+                            </p>
+                            <div class="social-links d-flex justify-content-center">
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-github"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-linkedin"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="member-card h-100">
+                        <div class="card-body text-center">
+                            <div class="position-relative mb-4">
+                                <img src="images/ahmet2.jpg" alt="Ahmet Yılmaz" class="member-image rounded-circle">
+                            </div>
+                            <h4 class="member-name">Ahmet Yılmaz</h4>
+                            <p class="member-title mb-3">Etkinlik Kordinatörü</p>
+                            <p class="member-description">
+                                Bilişim Sistemleri ve Teknolojileri 3. sınıf öğrencisi
+                            </p>
+                            <div class="social-links d-flex justify-content-center">
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-github"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-linkedin"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="member-card h-100">
+                        <div class="card-body text-center">
+                            <div class="position-relative mb-4">
+                                <img src="images/ayse2.jpg" alt="Ayşe Demir" class="member-image rounded-circle">
+                            </div>
+                            <h4 class="member-name">Ayşe Demir</h4>
+                            <p class="member-title mb-3">Teknik Sorumlu</p>
+                            <p class="member-description">
+                                Bilişim Sistemleri ve Teknolojileri 3. sınıf öğrencisi
+                            </p>
+                            <div class="social-links d-flex justify-content-center">
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-github"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-linkedin"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="member-card h-100">
+                        <div class="card-body text-center">
+                            <div class="position-relative mb-4">
+                                <img src="images/elif2.jpg" alt="Elif Korkmaz" class="member-image rounded-circle">
+                            </div>
+                            <h4 class="member-name">Elif Korkmaz</h4>
+                            <p class="member-title mb-3">Halkla İlişkiler Sorumlusu</p>
+                            <p class="member-description">
+                                Bilişim Sistemleri ve Teknolojileri 3. sınıf öğrencisi
+                            </p>
+                            <div class="social-links d-flex justify-content-center">
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-github"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-linkedin"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="member-card h-100">
+                        <div class="card-body text-center">
+                            <div class="position-relative mb-4">
+                                <img src="images/ahmet3.jpg" alt="Ahmet Yıldız" class="member-image rounded-circle">
+                            </div>
+                            <h4 class="member-name">Ahmet Yıldız</h4>
+                            <p class="member-title mb-3">Araştırma ve Geliştirme Sorumlusu</p>
+                            <p class="member-description">
+                                Bilişim Sistemleri ve Teknolojileri 3. sınıf öğrencisi
+                            </p>
+                            <div class="social-links d-flex justify-content-center">
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-github"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-linkedin"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="member-card h-100">
+                        <div class="card-body text-center">
+                            <div class="position-relative mb-4">
+                                <img src="images/ayse3.jpg" alt="Ayşe Demir" class="member-image rounded-circle">
+                            </div>
+                            <h4 class="member-name">Ayşe Demir</h4>
+                            <p class="member-title mb-3">Mentorluk Sorumlusu</p>
+                            <p class="member-description">
+                                Bilişim Sistemleri ve Teknolojileri 3. sınıf öğrencisi
+                            </p>
+                            <div class="social-links d-flex justify-content-center">
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-github"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-linkedin"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="member-card h-100">
+                        <div class="card-body text-center">
+                            <div class="position-relative mb-4">
+                                <img src="images/Ali.jpg" alt="Ali Cantürk" class="member-image rounded-circle">
+                            </div>
+                            <h4 class="member-name">Ali Cantürk</h4>
+                            <p class="member-title mb-3">Üye Temsilcisi</p>
+                            <p class="member-description">
+                                Bilişim Sistemleri ve Teknolojileri 3. sınıf öğrencisi
+                            </p>
+                            <div class="social-links d-flex justify-content-center">
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-github"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-linkedin"></i></a>
+                                <a href="#" class="social-icon mx-2"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+                        <!-- Danışman Kartı -->
+                        <div class="row justify-content-center mb-5">
+                            <div class="col-lg-6">
+                                <div class="member-card president-card text-center">
+                                    <div class="position-relative mb-4">
+                                        <img src="images/muhammed.jpg" alt="Muhammed Alp" class="member-image rounded-circle">
+                                        <span class="position-badge">Danışman</span>
+                                    </div>
+                                    <h3 class="member-name">Muhammed Alp</h3>
+                                    <p class="member-title mb-3">Topluluk Danışmanı</p>
+                                    <p class="member-description">
+                                        Mersin Üniversitesi Öğretim Görevlisi
+                                    </p>
+                                    <div class="social-links d-flex justify-content-center">
+                                        <a href="#" class="btn btn-outline-success btn-sm mx-2">
+                                            <i class="fab fa-linkedin fa-lg"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-outline-success btn-sm mx-2">
+                                            <i class="fab fa-github fa-lg"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-outline-success btn-sm mx-2">
+                                            <i class="fab fa-instagram fa-lg"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+        </div>
+    </section>
+
+    <!-- Etkinlikler Bölümü -->
+    <section class="events-section" id="etkinlikler">
+        <div class="container">
+            <h2 class="events-title">Etkinlikler</h2>
+            <div id="eventsCarousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="event">
+                                    <h4>Yazılım Geliştirme Atölyesi</h4>
+                                    <div class="event-info">
+                                        <i class="far fa-calendar-alt"></i>
+                                        <span>15 Mart 2025</span>
+                                    </div>
+                                    <div class="event-info">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>Mersin Üniversitesi</span>
+                                    </div>
+                                    <div class="event-description">
+                                        <i class="fas fa-info-circle"></i>
+                                        Bu atölyede, yazılım geliştirme süreçleri hakkında bilgi edinecek ve uygulamalı deneyim kazanacaksınız.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="event">
+                                    <h4>Hackathon 2025</h4>
+                                    <div class="event-info">
+                                        <i class="far fa-calendar-alt"></i>
+                                        <span>30 Nisan 2025</span>
+                                    </div>
+                                    <div class="event-info">
+                                        <i class="fas fa-globe"></i>
+                                        <span>Online</span>
+                                    </div>
+                                    <div class="event-description">
+                                        <i class="fas fa-info-circle"></i>
+                                        Yenilikçi projeler geliştirmek için 48 saat sürecek bir hackathon etkinliği düzenliyoruz. Katılmak için kaydolun!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="event">
+                                    <h4>Yazılım Mühendisliği Semineri</h4>
+                                    <div class="event-info">
+                                        <i class="far fa-calendar-alt"></i>
+                                        <span>10 Mayıs 2025</span>
+                                    </div>
+                                    <div class="event-info">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>Mersin Üniversitesi</span>
+                                    </div>
+                                    <div class="event-description">
+                                        <i class="fas fa-info-circle"></i>
+                                        Yazılım mühendisliği alanında uzman konuşmacılarla bilgi paylaşımı yapacağız.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="event">
+                                    <h4>Veri Bilimi Atölyesi</h4>
+                                    <div class="event-info">
+                                        <i class="far fa-calendar-alt"></i>
+                                        <span>20 Mayıs 2025</span>
+                                    </div>
+                                    <div class="event-info">
+                                        <i class="fas fa-globe"></i>
+                                        <span>Online</span>
+                                    </div>
+                                    <div class="event-description">
+                                        <i class="fas fa-info-circle"></i>
+                                        Veri analizi ve makine öğrenimi konularında uygulamalı eğitimler verilecektir.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#eventsCarousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Önceki</span>
+                </a>
+                <a class="carousel-control-next" href="#eventsCarousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Sonraki</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projeler Bölümü -->
+    <section class="projects-section" id="projeler">
+        <div class="container">
+            <h2 class="projects-title">Projeler</h2>
+            <div class="project-card">
+                <h4 class="project-title">Akıllı Tarım Projesi</h4>
+                <p class="project-description">Tarımda verimliliği artırmak için IoT tabanlı bir sistem geliştirme.</p>
+                <div class="project-info">
+                    <span>Tarih: 2025</span>
+                    <span>Durum: Devam Ediyor</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <h4 class="project-title">Yapay Zeka ile Veri Analizi</h4>
+                <p class="project-description">Büyük veri setlerini analiz ederek anlamlı sonuçlar çıkarma.</p>
+                <div class="project-info">
+                    <span>Tarih: 2025</span>
+                    <span>Durum: Tamamlandı</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <h4 class="project-title">Web Tabanlı Eğitim Platformu</h4>
+                <p class="project-description">Eğitim materyallerini dijital ortamda sunmak için bir platform geliştirme.</p>
+                <div class="project-info">
+                    <span>Tarih: 2025</span>
+                    <span>Durum: Planlama Aşamasında</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- İletişim Bölümü -->
+    <section class="contact-section" id="iletisim">
+        <div class="container">
+            <h2 class="section-title">İletişim</h2>
+            <div class="row">
+                <!-- Sol Taraf - İletişim Bilgileri -->
+                <div class="col-md-5">
+                    <div class="contact-info-card">
+                        <h3 class="contact-subtitle"><i class="fas fa-address-card"></i> İletişim Bilgilerimiz</h3>
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <p>Mersin Üniversitesi Erdemli Meslek Yüksekokulu<br>33740 Erdemli/Mersin</p>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <p>+90 777 777 77 77</p>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <p>meubilisimtoplulugu@gmail.com</p>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-clock"></i>
+                                <p>Pazartesi - Cuma: 09:00 - 17:00</p>
+                            </div>
+                        </div>
+                        <div class="social-links mt-4">
+                            <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sağ Taraf - İletişim Formu -->
+                <div class="col-md-7">
+                    <div class="contact-form-card">
+                        <h3 class="contact-subtitle"><i class="fas fa-paper-plane"></i> Bize Ulaşın</h3>
+                        <form class="contact-form" action="mailto:meubilisimtoplulugu@gmail.com" method="POST" enctype="text/plain">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="name" placeholder="Adınız Soyadınız" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-control" name="email" placeholder="E-posta Adresiniz" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="subject" placeholder="Konu" required>
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-control" rows="5" name="message" placeholder="Mesajınız" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-outline-success btn-block">Gönder</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Üye Kayıt Formu Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content bg-dark">
+                <div class="modal-header border-success">
+                    <h5 class="modal-title text-success">Üye Kayıt Formu</h5>
+                    <button type="button" class="close text-success" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="memberRegistrationForm">
+                        <div class="form-group">
+                            <input type="text" class="form-control bg-dark text-success border-success" 
+                                   id="memberName" placeholder="Ad Soyad" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control bg-dark text-success border-success" 
+                                   id="memberUniversity" placeholder="Okuduğu Üniversite" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control bg-dark text-success border-success" 
+                                   id="memberDepartment" placeholder="Bölüm" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control bg-dark text-success border-success" 
+                                   id="memberYear" placeholder="Sınıf (1-4)" min="1" max="4" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control bg-dark text-success border-success" 
+                                   id="memberTitle" placeholder="Ünvan/Pozisyon" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control bg-dark text-success border-success" 
+                                   id="memberDescription" placeholder="Kısa Açıklama">
+                        </div>
+                        <div class="form-group">
+                            <input type="file" class="form-control-file text-success" 
+                                   id="memberImage" accept="image/*" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control bg-dark text-success border-success" 
+                                   id="linkedinUrl" placeholder="LinkedIn URL">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control bg-dark text-success border-success" 
+                                   id="githubUrl" placeholder="GitHub URL">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control bg-dark text-success border-success" 
+                                   id="twitterUrl" placeholder="Twitter URL">
+                        </div>
+                        <button type="submit" class="btn btn-outline-success btn-block">Üye Ol</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container text-center">
+            <p>&copy; 2025 Bilişim Topluluğu. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <script>
+        
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('load', resizeCanvas);
+        window.addEventListener('resize', resizeCanvas);
+
+       
+        const chars = '01'; 
+        const fontSize = 14;
+        let columns;
+
+        
+        let drops = [];
+
+        function initMatrix() {
+            columns = canvas.width / fontSize;
+            drops = [];
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.random() * -100; 
+            }
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+
+                
+                ctx.fillText(text, x, y);
+
+                
+                if (y > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        
+        initMatrix();
+        setInterval(drawMatrix, 33);
+
+       
+        window.addEventListener('resize', initMatrix);
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        
+        const binaryRainCanvas = document.getElementById('binaryRain');
+        const binaryRainCtx = binaryRainCanvas.getContext('2d');
+
+        binaryRainCanvas.width = window.innerWidth;
+        binaryRainCanvas.height = window.innerHeight;
+
+        const binaryRain = '10';
+        const fontSizeRain = 14;
+        const columnsRain = binaryRainCanvas.width/fontSizeRain;
+
+        const dropsRain = [];
+        for(let x = 0; x < columnsRain; x++) {
+            dropsRain[x] = 1;
+        }
+
+        function drawBinaryRain() {
+            binaryRainCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            binaryRainCtx.fillRect(0, 0, binaryRainCanvas.width, binaryRainCanvas.height);
+
+            binaryRainCtx.fillStyle = '#00ff00';
+            binaryRainCtx.font = fontSizeRain + 'px monospace';
+
+            for(let i = 0; i < dropsRain.length; i++) {
+                const text = binaryRain.charAt(Math.floor(Math.random() * binaryRain.length));
+                binaryRainCtx.fillText(text, i*fontSizeRain, dropsRain[i]*fontSizeRain);
+
+                if(dropsRain[i]*fontSizeRain > binaryRainCanvas.height && Math.random() > 0.975)
+                    dropsRain[i] = 0;
+
+                dropsRain[i]++;
+            }
+        }
+
+       
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                preloader.style.transition = 'opacity 1s ease';
+                
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 1000);
+            }, 2000); 
+        });
+
+        
+        setInterval(drawBinaryRain, 33);
+    </script>
+
+    <script>
+    document.getElementById('memberRegistrationForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+       
+        const name = document.getElementById('memberName').value;
+        const university = document.getElementById('memberUniversity').value;
+        const department = document.getElementById('memberDepartment').value;
+        const year = document.getElementById('memberYear').value;
+        const title = document.getElementById('memberTitle').value;
+        const description = document.getElementById('memberDescription').value;
+        const imageFile = document.getElementById('memberImage').files[0];
+        const linkedin = document.getElementById('linkedinUrl').value;
+        const github = document.getElementById('githubUrl').value;
+        const twitter = document.getElementById('twitterUrl').value;
+
+        const memberCard = `
+            <div class="col-lg-4 mb-4">
+                <div class="member-card h-100">
+                    <div class="card-body text-center">
+                        <div class="position-relative mb-4">
+                            <img src="${URL.createObjectURL(imageFile)}" 
+                                 alt="${name}" 
+                                 class="member-image rounded-circle">
+                        </div>
+                        <h4 class="member-name">${name}</h4>
+                        <p class="member-title mb-3">${title}</p>
+                        <p class="member-description">${description}</p>
+                        <p class="member-university">Üniversite: ${university}</p>
+                        <p class="member-department">Bölüm: ${department}</p>
+                        <p class="member-year">Sınıf: ${year}</p>
+                        <div class="social-links d-flex justify-content-center">
+                            ${linkedin ? `
+                                <a href="${linkedin}" class="btn btn-outline-success btn-sm mx-2">
+                                    <i class="fab fa-linkedin fa-lg"></i>
+                                </a>
+                            ` : ''}
+                            ${github ? `
+                                <a href="${github}" class="btn btn-outline-success btn-sm mx-2">
+                                    <i class="fab fa-github fa-lg"></i>
+                                </a>
+                            ` : ''}
+                            ${twitter ? `
+                                <a href="${twitter}" class="btn btn-outline-success btn-sm mx-2">
+                                    <i class="fab fa-twitter fa-lg"></i>
+                                </a>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        
+        document.querySelector('.members-row').insertAdjacentHTML('beforeend', memberCard);
+
+        
+        $('#registerModal').modal('hide');
+
+        
+        this.reset();
+    });
+    </script>
+</body>
+</html>
